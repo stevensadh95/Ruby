@@ -91,7 +91,7 @@ def expand(grammar, non_term="<start>")
   end
 
   if not is_non_terminal? non_term
-      return " " + non_term + " "
+      return " " + non_term
 
 
   elsif non_term == "<start>"
