@@ -81,35 +81,56 @@ end
 # expansion, etc.). The names of non-terminals should be considered
 # case-insensitively, <NOUN> matches <Noun> and <noun>, for example.
 def expand(grammar, non_term="<start>")
+  sentence = ""
 
-sentence = ""
-current_term = grammar[non_term]
-if  current_term is_non_terminal?
+  if non_term.kind_of? Array
+  for item in non_term
+     sentence += expand(grammar, item)
+  end
+    return sentence
+  end
 
-end
+  if not is_non_terminal? non_term
+      return " " + non_term + " "
 
-sentence = sentence + expand(grammar,non_term)
 
-end
+  elsif non_term == "<start>"
+    list = grammar[non_term]
+    list2 = list[0]
+
+      for item in list2
+      sentence += expand(grammar, item)
+      end
+
+    return sentence
+
+  else
+    list = grammar[non_term]
+      len = list.length
+      rand_item_index = rand(len)
+      return expand(grammar,list[rand_item_index])
+
+    end
+  end
+
 
 # Given the name of a grammar file,
 # read the grammar file and print a
 # random expansion of the grammar
 def rsg(filename)
-  # TODO: your implementation here
+  grammar = []
+  definition = read_grammar_defs filename
+  for line in definition
+  grammar.push(split_definition(line))
+  end
+  hash = to_grammar_hash(grammar)
+  print(expand(hash))
 end
 
 if __FILE__ == $0
-  # TODO: your implementation of the following
-  # prompt the user for the name of a grammar file
-  # rsg that file
+  print("Please Enter the name of the file to be read\n")
+  input = gets.strip
+  rsg(input)
 end
 
-# read_grammar_defs("C:/Users/Steven/RubymineProjects/grammar/examples/Civ-paper.g")
-#print(split_definition("\n<start>\nYou <adj> <name> . ;\nMay <curse> . ;\n"))
 
-split_array = [["<start>", "The   <object>   <verb>   tonight."], ["<object>", "waves", "big    yellow       flowers", "slugs"], ["<verb>", "sigh <adverb>", "portend like <object>", "die <adverb>"], ["<adverb>", "warily", "grumpily"]]
-hashy = (to_grammar_hash(split_array))
-print("\n\n")
-
-print(expand(hashy))
