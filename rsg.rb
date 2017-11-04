@@ -21,7 +21,6 @@ end
 #   split_definition "\n<start>\nYou <adj> <name> . ;\n;\n"
 #     returns ["<start>", "You <adj> <name> .", ""]
 def split_definition(raw_def)
-
   # removes extra newlines
   tokens = raw_def.strip.split("\n")
   tokens2 = tokens.map {|element| element.delete(";").strip}
@@ -37,13 +36,9 @@ end
 # to_grammar_hash([["<start>", "The   <object>   <verb>   tonight."], ["<object>", "waves", "big    yellow       flowers", "slugs"], ["<verb>", "sigh <adverb>", "portend like <object>", "die <adverb>"], ["<adverb>", "warily", "grumpily"]])
 # returns {"<start>"=>[["The", "<object>", "<verb>", "tonight."]], "<object>"=>[["waves"], ["big", "yellow", "flowers"], ["slugs"]], "<verb>"=>[["sigh", "<adverb>"], ["portend", "like", "<object>"], ["die", "<adverb>"]], "<adverb>"=>[["warily"], ["grumpily"]]}
 def to_grammar_hash(split_def_array)
-  # element[0] of a definition  is the key.
   hash = {}
-  # temp_array = split_def_array
-  # key = temp_array[0]
-  # temp_array.delete(temp_array.index(0))
   for definition in split_def_array
-    key = definition[0]
+    key = definition[0].downcase
     definition.delete_at(0)
     array = []
     for element in definition
@@ -51,7 +46,6 @@ def to_grammar_hash(split_def_array)
     end
    hash[key] = array
   end
-
 hash
 end
 
@@ -90,29 +84,35 @@ def expand(grammar, non_term="<start>")
     return sentence
   end
 
+  non_term = non_term.downcase
   if not is_non_terminal? non_term
+    if non_term == "." or non_term == "?" or non_term == "!"  or non_term == "," or non_term == ":" or non_term == "-"
+      return  non_term
+    end
       return " " + non_term
-
 
   elsif non_term == "<start>"
     list = grammar[non_term]
-    list2 = list[0]
-
-      for item in list2
-      sentence += expand(grammar, item)
+     for item in list
+      for item2 in item
+      sentence += expand(grammar, item2)
       end
-
+      end
     return sentence
 
   else
     list = grammar[non_term]
-      len = list.length
-      rand_item_index = rand(len)
-      return expand(grammar,list[rand_item_index])
 
+    #  Handles nonterminals that aren't defined
+    if list==nil
+      raise(Exception,"Non-terminal #{non_term} is not defined")
+    end
+
+    len = list.length
+    rand_item_index = rand(len)
+    return expand(grammar,list[rand_item_index])
     end
   end
-
 
 # Given the name of a grammar file,
 # read the grammar file and print a

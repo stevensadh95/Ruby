@@ -3,19 +3,19 @@ The poem grammar. This is the same simple grammar discussed in the assignment ha
 
 {
 <start>
-The   <object>   <verb>   tonight.	;
+The   <OBJect>   <veRb>  tonight.	;
 }
 
 There can be any amount of white space in between the words in a production and before and after the terminating semi-colon.  Be sure you skip over extra white space.
 {
-<object>
+<obJect>
 waves	;             
 big    yellow       flowers	;          
 slugs	;
 }
 
 {
-<verb>
+<VERB>
 sigh <adverb>	;
 portend like <object>	;
 die <adverb>	;        
